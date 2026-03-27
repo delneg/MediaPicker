@@ -15,7 +15,8 @@ class BaseMediasProvider: ObservableObject {
     @Published var assetMediaModels = [AssetMediaModel]()
     private var privateAssetMediaModels: [AssetMediaModel] = []
 
-    @Published var isLoading: Bool = false
+    @Published var isLoading: Bool = true
+    @Published var hasLoadedOnce: Bool = false
 
     private var timerTask: Task<Void, Never>?
     private var cancellableTask: Task<Void, Never>?
@@ -64,17 +65,20 @@ class BaseMediasProvider: ObservableObject {
                 self?.stopPublishing()
                 DispatchQueue.main.async {
                     self?.assetMediaModels = self?.privateAssetMediaModels ?? []
+                    self?.hasLoadedOnce = true
                 }
             }
         } else if let massFilterClosure = massFilterClosure {
             cancellableTask = Task { [weak self] in
                 let result = await massFilterClosure(assets.map { Media(source: $0) })
                 self?.assetMediaModels = result.compactMap { $0.source as? AssetMediaModel }
+                self?.hasLoadedOnce = true
             }
         }
         else {
             DispatchQueue.main.async { [weak self] in
                 self?.assetMediaModels = assets
+                self?.hasLoadedOnce = true
             }
         }
     }

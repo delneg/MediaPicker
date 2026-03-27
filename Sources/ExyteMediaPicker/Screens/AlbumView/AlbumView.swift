@@ -56,7 +56,7 @@ struct AlbumView: View {
                 if viewModel.isLoading, viewModel.assetMediaModels.isEmpty {
                     ProgressView()
                         .padding()
-                } else if !viewModel.isLoading, viewModel.assetMediaModels.isEmpty {
+                } else if !viewModel.isLoading, viewModel.assetMediaModels.isEmpty, viewModel.hasLoadedOnce {
                     Text("Empty data")
                         .font(.title3)
                         .foregroundColor(theme.main.pickerText)

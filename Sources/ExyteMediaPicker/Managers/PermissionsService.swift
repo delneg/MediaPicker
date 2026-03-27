@@ -18,13 +18,13 @@ final class PermissionsService: ObservableObject {
     /// photoLibraryChangePermissionPublisher gets called multiple times even when nothing changed in photo library, so just use this one to make sure the closure runs exactly once
     func requestPhotoLibraryPermission(_ permissionGrantedClosure: @Sendable @escaping ()->()) {
         Task {
-            let currentStatus = PHPhotoLibrary.authorizationStatus(for: .addOnly)
+            let currentStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
             if currentStatus == .authorized || currentStatus == .limited {
                 permissionGrantedClosure()
                 return
             }
 
-            let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+            let status = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
             updatePhotoLibraryAuthorizationStatus()
             if status == .authorized || status == .limited {
                 permissionGrantedClosure()
@@ -40,7 +40,7 @@ final class PermissionsService: ObservableObject {
     }
 
     func updatePhotoLibraryAuthorizationStatus() {
-        let status = PHPhotoLibrary.authorizationStatus(for: .addOnly)
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
         
         let result: PhotoLibraryPermissionStatus
         switch status {
