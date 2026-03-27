@@ -45,9 +45,7 @@ private extension PermissionActionView {
         case .authorized, .unknown:
             EmptyView()
         case .limited:
-            PermissionsErrorView(text: "Setup Photos access to see more photos here") {
-                showSheet = true
-            }
+            EmptyView()
         case .unavailable:
             goToSettingsButton(text: "Allow Photos access in settings to see photos here")
         }
